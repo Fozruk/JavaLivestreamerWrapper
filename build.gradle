@@ -1,0 +1,40 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+
+group = 'com.github.epilepticz'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+version = '1.0'
+
+repositories {
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+
+dependencies {
+    compile group: 'log4j', name: 'log4j', version:'1.2.17'
+}
+
+test {
+    systemProperties 'property': 'value'
+}
+
+uploadArchives {
+    repositories {
+       flatDir {
+           dirs 'repos'
+       }
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.github.epilepticz.streamchecker.main.Main',
+                'Class-Path': 'com.github.epilepticz.streamchecker'
+        )
+    }
+    //Includiert alle Dependencies http://stackoverflow.com/questions/4871656/using-gradle-to-build-a-jar-with-dependencies
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+}
