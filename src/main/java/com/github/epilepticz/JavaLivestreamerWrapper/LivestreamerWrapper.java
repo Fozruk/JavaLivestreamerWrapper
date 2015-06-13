@@ -46,7 +46,12 @@ public class LivestreamerWrapper {
 
 	private void notifyObserversWithMessage(String message, SortOfMessage sort) {
 		for (ILivestreamerObserver obsi : observers) {
-			obsi.recieveLivestreamerMessage(message, sort);
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					obsi.recieveLivestreamerMessage(message, sort);
+				}
+			}).start();
 		}
 	}
 
