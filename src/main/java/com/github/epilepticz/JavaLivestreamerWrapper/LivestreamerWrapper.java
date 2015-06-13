@@ -23,9 +23,9 @@ public class LivestreamerWrapper {
 		logger.info("Created a LivestreamerWrapper-Object");
 	}
 
-	public void startLivestreamerWithURL(URL url) {
+	public void startLivestreamerWithURL(URL url, String quality) {
 		logger.info("Starting a Livestreamer-Process with URL: '" + url + "'");
-		Thread streamthread = new Thread(new VlcThread(url));
+		Thread streamthread = new Thread(new VlcThread(url, quality));
 		streamthread.start();
 		logger.info("Livestreamer-Process with URL: '" + url + "' started");
 	}
@@ -65,12 +65,13 @@ public class LivestreamerWrapper {
 		private URL url;
 		private Process livestreamerProcess;
 
-		public VlcThread(URL url) {
-			nullCheckForArguments(url);
+		public VlcThread(URL url, String quality) {
+			nullCheckForArguments(url, quality);
 			this.url = url;
 			try {
 				livestreamerProcess = Runtime.getRuntime().exec(
-						livestreamerExecutable.getAbsolutePath() + " -p \"" + playerExecutable.getAbsolutePath() + "  --file-caching=5000\" " + url + " best");
+						livestreamerExecutable.getAbsolutePath() + " -p \"" + playerExecutable.getAbsolutePath() + "  --file-caching=5000\" " + url + " "
+								+ quality);
 			} catch (IOException e1) {
 				throw new IllegalArgumentException("Livestreamer with Path '" + livestreamerExecutable.getAbsolutePath() + "' and playerpath '"
 						+ playerExecutable.getAbsolutePath() + "' failed to start the process!");
