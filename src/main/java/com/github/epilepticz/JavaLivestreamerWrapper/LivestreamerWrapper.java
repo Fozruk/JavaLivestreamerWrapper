@@ -7,13 +7,16 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class LivestreamerWrapper {
-	private static final Logger logger = Logger.getLogger(LivestreamerWrapper.class);
+public abstract class LivestreamerWrapper {
+	private static final Logger logger = LoggerFactory.getLogger
+			(LivestreamerWrapper.class);
 
-	private File playerExecutable;
-	private File livestreamerExecutable;
+	protected File playerExecutable;
+	protected File livestreamerExecutable;
+	protected IServerOberserver observer;
 
 	public LivestreamerWrapper(File livestreamerExecutable, File playerExecutable) {
 		nullCheckForArguments(livestreamerExecutable, playerExecutable);
@@ -21,13 +24,6 @@ public class LivestreamerWrapper {
 		this.livestreamerExecutable = livestreamerExecutable;
 		this.playerExecutable = playerExecutable;
 		logger.info("Created a LivestreamerWrapper-Object");
-	}
-
-	public void startLivestreamerWithURL(URL url, String quality) {
-		logger.info("Starting a Livestreamer-Process with URL: '" + url + "'");
-		Thread streamthread = new Thread(new VlcThread(url, quality));
-		streamthread.start();
-		logger.info("Livestreamer-Process with URL: '" + url + "' started");
 	}
 
 	// ----- Observerstuff!
@@ -55,6 +51,8 @@ public class LivestreamerWrapper {
 		}
 	}
 
+
+
 	// ----- Util
 
 	private void nullCheckForArguments(Object... args) {
@@ -66,17 +64,16 @@ public class LivestreamerWrapper {
 
 	// ----- Player-Thread
 
-	private class VlcThread implements Runnable {
+	protected class VlcThread implements Runnable {
 		private URL url;
 		private Process livestreamerProcess;
 
-		public VlcThread(URL url, String quality) {
-			nullCheckForArguments(url, quality);
+		public VlcThread(URL url, String quality,String args) {
+			nullCheckForArguments(url, quality,args);
 			this.url = url;
 			try {
 				livestreamerProcess = Runtime.getRuntime().exec(
-						livestreamerExecutable.getAbsolutePath() + " -p \"" + playerExecutable.getAbsolutePath() + "  --file-caching=5000\" " + url + " "
-								+ quality);
+						livestreamerExecutable.getAbsolutePath() + args);
 			} catch (IOException e1) {
 				throw new IllegalArgumentException("Livestreamer with Path '" + livestreamerExecutable.getAbsolutePath() + "' and playerpath '"
 						+ playerExecutable.getAbsolutePath() + "' failed to start the process!");
@@ -91,12 +88,20 @@ public class LivestreamerWrapper {
 							notifyObserversWithMessage("VLC Stream ended: Media Stream from " + url + " ended", SortOfMessage.WRAPPER_LOG);
 						else
 							notifyObserversWithMessage("No Stream found: Stream is offline or livestreamer is outdated!", SortOfMessage.WRAPPER_LOG);
+						if(observer != null)
+							observer.onShutdown(exitcode);
 					} catch (InterruptedException e) {
 						notifyObserversWithMessage("LivestreamerProcess with URL '" + url + "' interrupted! Getting closed now!",
 								SortOfMessage.LIVESTREAMERPROCESS_INTERRUPTED);
 					}
 				}
 			}).start();
+
+		}
+
+		public void killProcess()
+		{
+			livestreamerProcess.destroy();
 		}
 
 		@Override
