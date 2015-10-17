@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +30,7 @@ public abstract class LivestreamerWrapper {
 
 	// ----- Observerstuff!
 
-	ArrayList<ILivestreamerObserver> observers = new ArrayList<ILivestreamerObserver>();
+	Set<ILivestreamerObserver> observers = new HashSet<ILivestreamerObserver>();
 
 	public void addObserver(ILivestreamerObserver listener) {
 		nullCheckForArguments(listener);
