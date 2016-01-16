@@ -18,7 +18,7 @@ public class ServerLivestreamer extends  LivestreamerWrapper implements ILivestr
     private String args;
     VlcThread thread;
 
-    public ServerLivestreamer(File livestreamerExecutable, File
+    public ServerLivestreamer(String livestreamerExecutable, String
             playerExecutable,IServerOberserver observer) {
         super(livestreamerExecutable, playerExecutable);
         this.observer = observer;

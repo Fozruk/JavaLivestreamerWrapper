@@ -16,11 +16,11 @@ public abstract class LivestreamerWrapper {
 	private static final Logger logger = LoggerFactory.getLogger
 			(LivestreamerWrapper.class);
 
-	protected File playerExecutable;
-	protected File livestreamerExecutable;
+	protected String playerExecutable;
+	protected String livestreamerExecutable;
 	protected IServerOberserver observer;
 
-	public LivestreamerWrapper(File livestreamerExecutable, File playerExecutable) {
+	public LivestreamerWrapper(String livestreamerExecutable, String playerExecutable) {
 		nullCheckForArguments(livestreamerExecutable, playerExecutable);
 		logger.info("Creating a LivestreamerWrapper-Object");
 		this.livestreamerExecutable = livestreamerExecutable;
@@ -75,10 +75,10 @@ public abstract class LivestreamerWrapper {
 			this.url = url;
 			try {
 				livestreamerProcess = Runtime.getRuntime().exec(
-						livestreamerExecutable.getAbsolutePath() + args);
+						livestreamerExecutable + args);
 			} catch (IOException e1) {
-				throw new IllegalArgumentException("Livestreamer with Path '" + livestreamerExecutable.getAbsolutePath() + "' and playerpath '"
-						+ playerExecutable.getAbsolutePath() + "' failed to start the process!");
+				throw new IllegalArgumentException("Livestreamer with Path '" + livestreamerExecutable + "' and playerpath '"
+						+ playerExecutable + "' failed to start the process!");
 			}
 			new Thread(new Runnable() {
 				@Override
