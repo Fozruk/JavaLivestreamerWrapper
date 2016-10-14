@@ -36,18 +36,26 @@ public class ServerLivestreamer extends  LivestreamerWrapper implements ILivestr
             e.printStackTrace();
         }
 
-        logger.info("Starting a Livestreamer-Process with URL: '" + url + "'");
-        args =  " " + url + " "
-                + qualityOptions[0] + " --player-external-http";
+        QualityChooser chooser  = new QualityChooser(qualityOptions, new ICallback() {
+            @Override
+            public void onSelectQuality(String quality) {
+                logger.info("Starting a Livestreamer-Process with URL: '" + url + "'");
+                args =  " " + url + " "
+                        + quality + " --player-external-http";
 
-        thread = new VlcThread(url, quality,args);
+                thread = new VlcThread(url, quality,args);
 
-        Thread streamthread = new Thread(thread);
+                Thread streamthread = new Thread(thread);
 
-        streamthread.start();
-        logger.info("Livestreamer-Process with URL: '" + url + "' started");
+                streamthread.start();
+                logger.info("Livestreamer-Process with URL: '" + url + "' started");
+
+            }
+        });
         addObserver(this);
+
     }
+
 
 
     @Override

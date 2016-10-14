@@ -78,7 +78,6 @@ public abstract class LivestreamerWrapper {
 				if(line.contains("Available streams"))
 				{
 					options = line.split(":")[1].split(",");
-					Arrays.stream(options).forEach((x) -> System.out.println(x));
 				}
 				notifyObserversWithMessage("Livestreamer output: " + line, SortOfMessage.LIVESTRAMER_LOG);
 			}

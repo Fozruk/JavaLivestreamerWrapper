@@ -8,4 +8,5 @@ public interface IServerOberserver {
     void onBroadcastServerip(String ip);
     void onShutdown(int exitcode);
     void onStreamEnded();
+
 }
