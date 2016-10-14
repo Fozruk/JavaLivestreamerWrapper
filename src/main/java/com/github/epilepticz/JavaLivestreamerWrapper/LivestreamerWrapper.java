@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -62,6 +63,30 @@ public abstract class LivestreamerWrapper {
 			if (obj == null)
 				throw new IllegalArgumentException("Parameter (" + obj + ") is null!");
 		}
+	}
+
+	public String[] getQualityOption(URL url) throws IOException {
+
+		Process proc = Runtime.getRuntime().exec(
+				livestreamerExecutable + " "+ url);
+
+		BufferedReader b = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+		String line;
+		String[] options= null;
+		try {
+			while ((line = b.readLine()) != null) {
+				if(line.contains("Available streams"))
+				{
+					options = line.split(":")[1].split(",");
+					Arrays.stream(options).forEach((x) -> System.out.println(x));
+				}
+				notifyObserversWithMessage("Livestreamer output: " + line, SortOfMessage.LIVESTRAMER_LOG);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return options;
 	}
 
 	// ----- Player-Thread

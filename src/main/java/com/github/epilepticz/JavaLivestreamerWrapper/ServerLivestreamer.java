@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +29,16 @@ public class ServerLivestreamer extends  LivestreamerWrapper implements ILivestr
                                    IServerOberserver observer)
     {
         this.observer = observer;
+        String[] qualityOptions = null;
+        try {
+            qualityOptions = this.getQualityOption(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         logger.info("Starting a Livestreamer-Process with URL: '" + url + "'");
         args =  " " + url + " "
-                + quality + " --player-external-http";
+                + qualityOptions[0] + " --player-external-http";
 
         thread = new VlcThread(url, quality,args);
 
