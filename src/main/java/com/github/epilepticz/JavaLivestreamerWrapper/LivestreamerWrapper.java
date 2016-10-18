@@ -78,6 +78,11 @@ public abstract class LivestreamerWrapper {
 				if(line.contains("Available streams"))
 				{
 					options = line.split(":")[1].split(",");
+					for (int i = 0; i < options.length; i++) {
+						if(options[i].contains("(")){
+							options[i] = options[i].replaceAll("\\(.*?\\)","");
+						}
+					}
 				}
 				notifyObserversWithMessage("Livestreamer output: " + line, SortOfMessage.LIVESTRAMER_LOG);
 			}

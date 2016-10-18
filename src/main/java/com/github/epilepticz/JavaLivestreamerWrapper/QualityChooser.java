@@ -8,12 +8,12 @@ import java.util.Arrays;
 /**
  * Created by Philipp on 14.10.2016.
  */
-public class QualityChooser extends JFrame {
+public class QualityChooser extends JDialog {
     JComboBox<String> box = new JComboBox<>();
     JButton button = new JButton("ok");
-    public QualityChooser(String[] options,ICallback callback)
+    public QualityChooser(String[] options,ICallback callback )
     {
-        super("Choose Quality");
+        super();
         this.getContentPane().setLayout(new BoxLayout(this.getContentPane(),BoxLayout.Y_AXIS));
         this.getContentPane().add(box);
         this.getContentPane().add(button);
